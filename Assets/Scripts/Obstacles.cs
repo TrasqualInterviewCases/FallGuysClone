@@ -113,7 +113,7 @@ public class Obstacles : MonoBehaviour
         {
             if (obsType == ObstacleType.Wall || obsType == ObstacleType.Moving)
             {
-                effectable.Respawn();
+                StartCoroutine(effectable.Respawn());
             }
             else if (obsType == ObstacleType.RotatingStick || obsType == ObstacleType.HalfDonut)
             {

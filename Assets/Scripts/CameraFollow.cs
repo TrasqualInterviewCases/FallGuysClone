@@ -15,7 +15,7 @@ public class CameraFollow : MonoBehaviour
 
     private void Start()
     {
-        target = FindObjectOfType<PlayerController>().transform;
+        target = FindObjectOfType<Player>().transform;
 
     }
 

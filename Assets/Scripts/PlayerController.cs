@@ -220,4 +220,9 @@ public class PlayerController : MonoBehaviour, IEffectable
         mainCam.GetComponent<CameraFollow>().target = GameObject.Find("WallToPaint").transform;
         enabled = false;
     }
+
+    IEnumerator IEffectable.Respawn()
+    {
+        throw new System.NotImplementedException();
+    }
 }

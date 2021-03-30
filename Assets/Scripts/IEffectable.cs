@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IEffectable
 {
-    void Respawn();
+    IEnumerator Respawn();
 
     void ApplyForce(Vector3 force, ForceMode forceMode);
 

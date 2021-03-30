@@ -147,6 +147,23 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1454155211}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &69616711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 69616706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fae9f8b15d83bb43bfd9f999cad9b6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  force: 2
+  rotationSpeed: 0.1
+  movementSpeed: 0.1
+  target: {fileID: 0}
+  obsType: 2
 --- !u!1001 &72594224
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -355,6 +372,23 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 138647757}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &138647763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138647758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fae9f8b15d83bb43bfd9f999cad9b6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  force: 2
+  rotationSpeed: 0.1
+  movementSpeed: 0.1
+  target: {fileID: 0}
+  obsType: 2
 --- !u!1001 &164004257
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1681,6 +1715,23 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1002490440}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1002490446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002490441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fae9f8b15d83bb43bfd9f999cad9b6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  force: 2
+  rotationSpeed: 0.1
+  movementSpeed: 0.1
+  target: {fileID: 0}
+  obsType: 2
 --- !u!1001 &1028635612
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2052,11 +2103,12 @@ MonoBehaviour:
   maxVelocityChange: 3
   turnSpeed: 8
   jumpForce: 400
-  maxJumpTimer: 0.01
-  minMouseMovementToJump: 400
+  maxJumpTimer: 0.7
+  minMouseMovementToJump: 150
   mask:
     serializedVersion: 2
     m_Bits: 512
+  spawnTime: 2
 --- !u!136 &1399712939
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2913,6 +2965,23 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1722883230}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1722883236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1722883231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fae9f8b15d83bb43bfd9f999cad9b6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  force: 2
+  rotationSpeed: 0.1
+  movementSpeed: 0.1
+  target: {fileID: 0}
+  obsType: 2
 --- !u!1 &1732084536 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 4a5e89ae7a5f315448df81801c43fe1c,
@@ -2938,6 +3007,23 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.12875415, y: 0.089122504, z: 0.041758485}
   m_Center: {x: 0, y: -0.0000000018626451, z: 0}
+--- !u!114 &1732084541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732084536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fae9f8b15d83bb43bfd9f999cad9b6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  force: 2
+  rotationSpeed: 0.1
+  movementSpeed: 0.1
+  target: {fileID: 0}
+  obsType: 2
 --- !u!1 &1784075248
 GameObject:
   m_ObjectHideFlags: 0
@@ -4245,6 +4331,23 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.12875415, y: 0.089122504, z: 0.041758485}
   m_Center: {x: 0, y: -0.0000000018626451, z: 0}
+--- !u!114 &2041404475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2041404470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fae9f8b15d83bb43bfd9f999cad9b6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  force: 2
+  rotationSpeed: 0.1
+  movementSpeed: 0.1
+  target: {fileID: 0}
+  obsType: 2
 --- !u!1 &2072840395 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 81e1b456c3589a744aee18c84567b767,

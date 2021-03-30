@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IEffectable
 {
     [Header("Movement Parameters")]
     [SerializeField]
     float speed = 5f;
     [SerializeField]
-    float maxVelocityChange = 3f;
+    float maxVelocityChange = 10f;
     [SerializeField]
     float turnSpeed = 8f;
 
@@ -38,10 +38,23 @@ public class Player : MonoBehaviour
     [SerializeField]
     LayerMask mask;
 
+
+    [SerializeField]
+    float spawnTime = 2f;
+
+    Vector3 startPos;
+    Quaternion startRot;
+
     private void Awake()
     {
         anim = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody>();
+    }
+
+    private void Start()
+    {
+        startPos = transform.position;
+        startRot = transform.rotation;
     }
 
     private void Update()
@@ -51,11 +64,12 @@ public class Player : MonoBehaviour
         anim.SetFloat("verticalSpeed", rb.velocity.y);
         GetInput();
         TurnCharacter(movement);
+        FallFromMap();
     }
 
     private void FixedUpdate()
     {
-        MoveCharacter();
+        MoveCharacter(movement);
         ApplyJumpForce();
     }
 
@@ -90,9 +104,12 @@ public class Player : MonoBehaviour
         }
         if (Input.GetMouseButtonUp(0))
         {
-            if(jumpTimer <= maxJumpTimer && Mathf.Abs(hor) >= minMouseMovementToJump || Mathf.Abs(ver) >= minMouseMovementToJump && isGrounded)
+            if(jumpTimer <= maxJumpTimer && isGrounded)
             {
-                Jump();
+                if(Mathf.Abs(hor) >= minMouseMovementToJump || Mathf.Abs(ver) >= minMouseMovementToJump)
+                {
+                    Jump();
+                }
             }
             inputActive = false;
             jumpTimerActive = false;
@@ -106,12 +123,17 @@ public class Player : MonoBehaviour
         return Physics.CheckSphere(transform.position, groundDistance, mask, QueryTriggerInteraction.Ignore);
     }
 
-    private void MoveCharacter()
+    private void MoveCharacter(Vector3 movementVector)
     {
         if (inputActive && isGrounded && movement != Vector3.zero)
         {
-            Vector3 targetVelocity = transform.forward * speed;
+            Vector3 targetVelocity = transform.forward * movementVector.magnitude * speed;
             Vector3 currentVelocity = rb.velocity;
+            if (targetVelocity.magnitude < currentVelocity.magnitude)
+            {
+                targetVelocity = currentVelocity;
+                rb.velocity /= 1.1f;
+            }
             Vector3 velocityChange = targetVelocity - currentVelocity;
             velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
             velocityChange.y = 0f;
@@ -144,5 +166,42 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void FallFromMap()
+    {
+        if(rb.velocity.y <= -12f)
+        {
+            StartCoroutine(Respawn());
+        }
+    }
 
+    public IEnumerator Respawn()
+    {
+        yield return new WaitForSeconds(spawnTime);
+        transform.position = startPos;
+        transform.rotation = startRot;
+
+    }
+
+    public void ApplyForce(Vector3 force, ForceMode forceMode)
+    {
+        rb.AddForce(force, forceMode);
+    }
+
+    public void GetStunned(float force, Vector3 position, float radius)
+    {
+        rb.AddExplosionForce(force, position, radius);
+    }
+
+    public IEnumerator StunCo()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Finish()
+    {
+        Camera mainCam = Camera.main;
+        mainCam.GetComponent<Es.InkPainter.Sample.MousePainter>().enabled = true;
+        mainCam.GetComponent<CameraFollow>().target = GameObject.Find("WallToPaint").transform;
+        enabled = false;
+    }
 }
