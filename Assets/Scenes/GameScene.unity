@@ -1188,7 +1188,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!136 &807845457
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1227,18 +1227,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 807845456}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8bf24c41ba06c9498c7fea949d1682f, type: 3}
+  m_Script: {fileID: 11500000, guid: 00c7753f46682534e990fe858a403912, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  runSpeed: 8
+  speed: 5
+  maxVelocityChange: 3
   turnSpeed: 8
-  maxJumpTimer: 0.2
-  groundDistance: 0.2
+  targetVelocity: {x: 0, y: 0, z: 0}
+  velocityChange: {x: 0, y: 0, z: 0}
+  anim: {fileID: 0}
+  rb: {fileID: 0}
   jumpForce: 400
   mask:
     serializedVersion: 2
     m_Bits: 512
-  stunDuration: 3
+  spawnTime: 2
+  maxJumpTimer: 0.8
+  minMouseMovementToJump: 250
 --- !u!54 &807845460
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1542,7 +1547,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ba81e97cd627a94182f27e667ffa814, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 1399712941}
+  target: {fileID: 807845458}
   followDistance: 18
   strafeSpeed: 10
 --- !u!114 &963194230
@@ -2086,7 +2091,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1399712938
 MonoBehaviour:
   m_ObjectHideFlags: 0

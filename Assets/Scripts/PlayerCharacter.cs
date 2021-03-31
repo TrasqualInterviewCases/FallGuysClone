@@ -2,18 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour, IEffectable
+public class PlayerCharacter : CharacterBase, IEffectable
 {
-    [Header("Movement Parameters")]
-    [SerializeField]
-    float speed = 5f;
-    [SerializeField]
-    float maxVelocityChange = 10f;
-    [SerializeField]
-    float turnSpeed = 8f;
-
-    Animator anim;
-    Rigidbody rb;
 
 
     Vector3 mousePos;
@@ -23,9 +13,6 @@ public class Player : MonoBehaviour, IEffectable
     Vector3 movement;
 
     [Header("Jump Parameters")]
-    [SerializeField]
-    float jumpForce = 400f;
-    bool canJump = false;
     bool jumpTimerActive = false;
     float jumpTimer = 0f;
     [SerializeField]
@@ -34,27 +21,15 @@ public class Player : MonoBehaviour, IEffectable
     float minMouseMovementToJump = 100f;
 
     bool isGrounded = true;
-    float groundDistance = 0.2f;
-    [SerializeField]
-    LayerMask mask;
 
-
-    [SerializeField]
-    float spawnTime = 2f;
-
-    Vector3 startPos;
-    Quaternion startRot;
-
-    private void Awake()
+    public override void Awake()
     {
-        anim = GetComponentInChildren<Animator>();
-        rb = GetComponent<Rigidbody>();
+        base.Awake();
     }
 
-    private void Start()
+    public override void Start()
     {
-        startPos = transform.position;
-        startRot = transform.rotation;
+        base.Start();
     }
 
     private void Update()
@@ -63,13 +38,20 @@ public class Player : MonoBehaviour, IEffectable
         anim.SetBool("isGrounded", isGrounded);
         anim.SetFloat("verticalSpeed", rb.velocity.y);
         GetInput();
+        if (isGrounded)
+        {
+            CalculateVelocityChange(movement);
+        }
         TurnCharacter(movement);
         FallFromMap();
     }
 
     private void FixedUpdate()
     {
-        MoveCharacter(movement);
+        if (inputActive && isGrounded && movement != Vector3.zero)
+        {
+            MoveCharacter(targetVelocity,velocityChange);
+        }
         ApplyJumpForce();
     }
 
@@ -118,68 +100,44 @@ public class Player : MonoBehaviour, IEffectable
 
     }
 
-    private bool GroundCheck()
+    public override void CalculateVelocityChange(Vector3 movementVector)
     {
-        return Physics.CheckSphere(transform.position, groundDistance, mask, QueryTriggerInteraction.Ignore);
+        base.CalculateVelocityChange(movementVector);
     }
 
-    private void MoveCharacter(Vector3 movementVector)
+    public override void MoveCharacter(Vector3 targetVelocity, Vector3 velocitychange)
     {
-        if (inputActive && isGrounded && movement != Vector3.zero)
-        {
-            Vector3 targetVelocity = transform.forward * movementVector.magnitude * speed;
-            Vector3 currentVelocity = rb.velocity;
-            if (targetVelocity.magnitude < currentVelocity.magnitude)
-            {
-                targetVelocity = currentVelocity;
-                rb.velocity /= 1.1f;
-            }
-            Vector3 velocityChange = targetVelocity - currentVelocity;
-            velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
-            velocityChange.y = 0f;
-            velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
-
-            if (Mathf.Abs(velocityChange.magnitude) < targetVelocity.magnitude)
-            {
-                rb.AddForce(velocityChange, ForceMode.VelocityChange);                
-            }
-        }
+        base.MoveCharacter(targetVelocity, velocitychange);
     }
 
-    private void TurnCharacter(Vector3 movementVector)
+    public override void TurnCharacter(Vector3 movementVector)
     {
-        Quaternion direction = Quaternion.LookRotation(movementVector);
-        transform.rotation = Quaternion.Lerp(transform.rotation, direction, Time.deltaTime * turnSpeed);
+        base.TurnCharacter(movementVector);
     }
 
-    private void Jump()
+    public override void Jump()
     {
-        canJump = true;        
+        base.Jump();       
     }
 
-    private void ApplyJumpForce()
+    public override void ApplyJumpForce()
     {
-        if (canJump)
-        {
-            rb.AddForce((Vector3.up + transform.forward) * jumpForce);
-            canJump = false;
-        }
+        base.ApplyJumpForce();
     }
 
-    private void FallFromMap()
+    public override void FallFromMap()
     {
-        if(rb.velocity.y <= -12f)
-        {
-            StartCoroutine(Respawn());
-        }
+        base.FallFromMap();
     }
 
-    public IEnumerator Respawn()
+    public override IEnumerator RespawnCo()
     {
-        yield return new WaitForSeconds(spawnTime);
-        transform.position = startPos;
-        transform.rotation = startRot;
+        yield return StartCoroutine(base.RespawnCo());
+    }
 
+    public void Respawn()
+    {
+        StartCoroutine(RespawnCo());
     }
 
     public void ApplyForce(Vector3 force, ForceMode forceMode)
