@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour, IEffectable
+public class Player : MonoBehaviour
 {
     [Header("Movement Parameters")]
     [SerializeField]

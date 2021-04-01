@@ -113,11 +113,11 @@ public class Obstacles : MonoBehaviour
         {
             if (obsType == ObstacleType.Wall || obsType == ObstacleType.Moving)
             {
-                //StartCoroutine(effectable.Respawn());
+                effectable.Respawn();
             }
             else if (obsType == ObstacleType.RotatingStick || obsType == ObstacleType.HalfDonut)
             {
-                effectable.GetStunned(force, collision.contacts[0].point, 1f);
+                effectable.GetStunned(force, transform.right+transform.up,ForceMode.Impulse);
             }
 
         }

@@ -4,21 +4,20 @@ using UnityEngine;
 
 public class PlayerCharacter : CharacterBase, IEffectable
 {
-
-
     Vector3 mousePos;
     bool inputActive = false;
     float hor = 0f;
     float ver = 0f;
     Vector3 movement;
 
-    [Header("Jump Parameters")]
-    bool jumpTimerActive = false;
-    float jumpTimer = 0f;
+    [Header("Player Specific Jump Parameters")]
     [SerializeField]
     float maxJumpTimer = 0.2f;
     [SerializeField]
     float minMouseMovementToJump = 100f;
+    bool jumpTimerActive = false;
+    float jumpTimer = 0f;
+
 
     bool isGrounded = true;
 
@@ -34,25 +33,35 @@ public class PlayerCharacter : CharacterBase, IEffectable
 
     private void Update()
     {
-        isGrounded = GroundCheck();
-        anim.SetBool("isGrounded", isGrounded);
-        anim.SetFloat("verticalSpeed", rb.velocity.y);
-        GetInput();
-        if (isGrounded)
+        if (!isStunned)
         {
-            CalculateVelocityChange(movement);
+            isGrounded = GroundCheck();
+            anim.SetBool("isGrounded", isGrounded);
+            anim.SetFloat("verticalSpeed", rb.velocity.y);
+            GetInput();
+            if (isGrounded)
+            {
+                CalculateVelocityChange(movement);
+            }
+            TurnCharacter(movement);
+            FallFromMap();
         }
-        TurnCharacter(movement);
-        FallFromMap();
+        //if (ragController.activateRagdoll)
+        //{
+        //    transform.position = ragController.hips.position - new Vector3(0f, currentY, 0f);
+        //}
     }
 
     private void FixedUpdate()
     {
-        if (inputActive && isGrounded && movement != Vector3.zero)
+        if (!isStunned)
         {
-            MoveCharacter(targetVelocity,velocityChange);
+            if (inputActive && isGrounded && movement != Vector3.zero)
+            {
+                MoveCharacter(targetVelocity, velocityChange);
+            }
+            ApplyJumpForce();
         }
-        ApplyJumpForce();
     }
 
 
@@ -135,6 +144,14 @@ public class PlayerCharacter : CharacterBase, IEffectable
         yield return StartCoroutine(base.RespawnCo());
     }
 
+    public override IEnumerator StunCo()
+    {
+        inputActive = false;
+        yield return StartCoroutine(base.StunCo());
+    }
+
+
+
     public void Respawn()
     {
         StartCoroutine(RespawnCo());
@@ -145,14 +162,10 @@ public class PlayerCharacter : CharacterBase, IEffectable
         rb.AddForce(force, forceMode);
     }
 
-    public void GetStunned(float force, Vector3 position, float radius)
+    public void GetStunned(float force, Vector3 Vector,ForceMode forceMode)
     {
-        rb.AddExplosionForce(force, position, radius);
-    }
-
-    public IEnumerator StunCo()
-    {
-        throw new System.NotImplementedException();
+        rb.AddForce(force * Vector, forceMode);
+        StartCoroutine(StunCo());
     }
 
     public void Finish()

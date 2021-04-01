@@ -26,10 +26,9 @@ public abstract class CharacterBase : MonoBehaviour
     [SerializeField]
     LayerMask mask;
 
-
-    [SerializeField]
-    float spawnTime = 2f;
-
+    [Header("Stun Parameters")]
+    public float spawnTime = 2f;
+    public bool isStunned;
     Vector3 startPos;
     Quaternion startRot;
 
@@ -50,15 +49,17 @@ public abstract class CharacterBase : MonoBehaviour
         return Physics.CheckSphere(transform.position, groundDistance, mask, QueryTriggerInteraction.Ignore);
     }
 
+
+
     public virtual void CalculateVelocityChange(Vector3 movementVector)
     {
         targetVelocity = transform.forward * movementVector.magnitude * speed;
         Vector3 currentVelocity = rb.velocity;
-        if (targetVelocity.magnitude < currentVelocity.magnitude)
-        {
-            targetVelocity = currentVelocity;
-            rb.velocity /= 1.1f;
-        }
+        //if (targetVelocity.magnitude < currentVelocity.magnitude)
+        //{
+        //    targetVelocity = currentVelocity;
+        //    rb.velocity /= 1.1f;
+        //}
         velocityChange = targetVelocity - currentVelocity;
         velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
         velocityChange.y = 0f;
@@ -98,13 +99,24 @@ public abstract class CharacterBase : MonoBehaviour
         if (rb.velocity.y <= -12f)
         {
             StartCoroutine(RespawnCo());
+            StartCoroutine(StunCo());
         }
     }
 
     public virtual IEnumerator RespawnCo()
-    {
+    {        
         yield return new WaitForSeconds(spawnTime);
         transform.position = startPos;
         transform.rotation = startRot;
+    }
+
+    public virtual IEnumerator StunCo()
+    {
+        isStunned = true;
+        anim.enabled = false;
+        yield return new WaitForSeconds(spawnTime);
+        anim.SetFloat("speed", 0f);
+        isStunned = false;
+        anim.enabled = true;
     }
 }

@@ -8,7 +8,7 @@ public interface IEffectable
 
     void ApplyForce(Vector3 force, ForceMode forceMode);
 
-    void GetStunned(float force, Vector3 position, float radius);
+    void GetStunned(float force, Vector3 Vector, ForceMode forceMode);
 
     IEnumerator StunCo();
 
