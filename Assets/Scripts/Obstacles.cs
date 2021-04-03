@@ -117,7 +117,7 @@ public class Obstacles : MonoBehaviour
             }
             else if (obsType == ObstacleType.RotatingStick || obsType == ObstacleType.HalfDonut)
             {
-                effectable.GetStunned(force, transform.right+transform.up,ForceMode.Impulse);
+                effectable.GetStunned(force, transform.right+(transform.up/2f),ForceMode.Impulse);
             }
 
         }

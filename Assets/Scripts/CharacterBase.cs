@@ -4,9 +4,9 @@ using UnityEngine;
 
 public abstract class CharacterBase : MonoBehaviour
 {
-    [Header("Movement Parameters")]
     [SerializeField]
-    float speed = 5f;
+    [Header("Movement Parameters")]
+    public float speed = 5f;
     [SerializeField]
     float maxVelocityChange = 3f;
     [SerializeField]
@@ -32,6 +32,8 @@ public abstract class CharacterBase : MonoBehaviour
     Vector3 startPos;
     Quaternion startRot;
 
+    public bool racing = false;
+
     public virtual void Awake()
     {
         anim = GetComponentInChildren<Animator>();
@@ -42,6 +44,7 @@ public abstract class CharacterBase : MonoBehaviour
     {
         startPos = transform.position;
         startRot = transform.rotation;
+        GameManager.gmInstance.OnRaceStart += EnableControls;
     }
 
     public bool GroundCheck()
@@ -49,7 +52,10 @@ public abstract class CharacterBase : MonoBehaviour
         return Physics.CheckSphere(transform.position, groundDistance, mask, QueryTriggerInteraction.Ignore);
     }
 
-
+    public void EnableControls(bool start)
+    {
+        racing = start;
+    }
 
     public virtual void CalculateVelocityChange(Vector3 movementVector)
     {

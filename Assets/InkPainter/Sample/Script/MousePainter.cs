@@ -17,7 +17,7 @@ namespace Es.InkPainter.Sample
 		}
 
 		[SerializeField]
-		private Brush brush;
+		public Brush brush;
 
 		[SerializeField]
 		private UseMethodType useMethodType = UseMethodType.RaycastHitInfo;

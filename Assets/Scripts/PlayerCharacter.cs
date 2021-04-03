@@ -67,46 +67,48 @@ public class PlayerCharacter : CharacterBase, IEffectable
 
     private void GetInput()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (racing)
         {
-            mousePos = Input.mousePosition;
-            inputActive = true;
-            jumpTimerActive = true;
-            jumpTimer = 0f;
-        }
-        if (jumpTimerActive)
-        {
-            jumpTimer += Time.deltaTime;
-        }
-        else
-        {
-            jumpTimer = 0;
-        }
-        if (inputActive)
-        {
-            Vector3 currentMousePos = Input.mousePosition;
-            hor = currentMousePos.x - mousePos.x;
-            ver = currentMousePos.y - mousePos.y;
-            movement = new Vector3(hor, 0f, ver).normalized;
-            if (isGrounded)
+            if (Input.GetMouseButtonDown(0))
             {
-                anim.SetFloat("speed", rb.velocity.magnitude);
+                mousePos = Input.mousePosition;
+                inputActive = true;
+                jumpTimerActive = true;
+                jumpTimer = 0f;
             }
-        }
-        if (Input.GetMouseButtonUp(0))
-        {
-            if(jumpTimer <= maxJumpTimer && isGrounded)
+            if (jumpTimerActive)
             {
-                if(Mathf.Abs(hor) >= minMouseMovementToJump || Mathf.Abs(ver) >= minMouseMovementToJump)
+                jumpTimer += Time.deltaTime;
+            }
+            else
+            {
+                jumpTimer = 0;
+            }
+            if (inputActive)
+            {
+                Vector3 currentMousePos = Input.mousePosition;
+                hor = currentMousePos.x - mousePos.x;
+                ver = currentMousePos.y - mousePos.y;
+                movement = new Vector3(hor, 0f, ver).normalized;
+                if (isGrounded)
                 {
-                    Jump();
+                    anim.SetFloat("speed", rb.velocity.magnitude);
                 }
             }
-            inputActive = false;
-            jumpTimerActive = false;
-            anim.SetFloat("speed", 0f);
+            if (Input.GetMouseButtonUp(0))
+            {
+                if (jumpTimer <= maxJumpTimer && isGrounded)
+                {
+                    if (Mathf.Abs(hor) >= minMouseMovementToJump || Mathf.Abs(ver) >= minMouseMovementToJump)
+                    {
+                        Jump();
+                    }
+                }
+                inputActive = false;
+                jumpTimerActive = false;
+                anim.SetFloat("speed", 0f);
+            }
         }
-
     }
 
     public override void CalculateVelocityChange(Vector3 movementVector)
@@ -116,7 +118,7 @@ public class PlayerCharacter : CharacterBase, IEffectable
 
     public override void MoveCharacter(Vector3 targetVelocity, Vector3 velocitychange)
     {
-        base.MoveCharacter(targetVelocity, velocitychange);
+        rb.AddForce(transform.forward * speed, ForceMode.Force);
     }
 
     public override void TurnCharacter(Vector3 movementVector)
@@ -149,8 +151,6 @@ public class PlayerCharacter : CharacterBase, IEffectable
         inputActive = false;
         yield return StartCoroutine(base.StunCo());
     }
-
-
 
     public void Respawn()
     {
