@@ -18,7 +18,6 @@ public class PlayerCharacter : CharacterBase, IEffectable
     bool jumpTimerActive = false;
     float jumpTimer = 0f;
 
-
     bool isGrounded = true;
     bool onRotatingPlatform = false;
 
@@ -192,7 +191,7 @@ public class PlayerCharacter : CharacterBase, IEffectable
         {
             t += Time.deltaTime;
             rb.isKinematic = true;
-            transform.position = Vector3.MoveTowards(curPos, (wall.transform.position - new Vector3(0f, 5f, 3f)),t*speed);
+            transform.position = Vector3.MoveTowards(curPos, (wall.transform.position - new Vector3(0f, 5f, 4f)),t*15f);
             transform.LookAt((wall.transform.position - new Vector3(0f, 6.2f, 3f)));
             anim.SetFloat("speed", 1f);
             yield return new WaitForEndOfFrame();
@@ -205,6 +204,9 @@ public class PlayerCharacter : CharacterBase, IEffectable
         mainCam.GetComponent<TextureCheck>().isPainting = true;
         mainCam.GetComponent<TextureCheck>().percentText.gameObject.SetActive(true);
         mainCam.GetComponent<CameraFollow>().target = wall.transform;
+        Transform vCams = GameObject.Find("VirtualCams").transform;
+        vCams.GetChild(0).gameObject.SetActive(false);
+        vCams.GetChild(1).gameObject.SetActive(true);
         GameManager.gmInstance.FinishRace();
     }
 
