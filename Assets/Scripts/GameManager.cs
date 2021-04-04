@@ -29,14 +29,12 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     GameObject playerPrefab;
 
+    List<GameObject> opponents = new List<GameObject>();
+
 
     private void Awake()
     {
         gmInstance = this;
-    }
-
-    private void Start()
-    {
         SetupCharacters();
     }
 
@@ -81,12 +79,21 @@ public class GameManager : MonoBehaviour
         {
             if(i != 4)
             {
-                Instantiate(opponentPrefab, spawnPoints[i].position, Quaternion.identity);
+                GameObject opponent = Instantiate(opponentPrefab, spawnPoints[i].position, Quaternion.identity);
+                opponents.Add(opponent);
             }
             else if(i == 4)
             {
-                Instantiate(playerPrefab, spawnPoints[i].position, Quaternion.identity);
+                Instantiate(playerPrefab, spawnPoints[i].position, Quaternion.identity);                
             }
+        }
+    }
+
+    public void FinishRace()
+    {
+        foreach (GameObject opponent in opponents)
+        {
+            opponent.SetActive(false);
         }
     }
 }

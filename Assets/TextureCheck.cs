@@ -9,8 +9,7 @@ public class TextureCheck : MonoBehaviour
 
     [SerializeField]
     Texture brushTex;
-    [SerializeField]
-    TMP_Text percentText;
+    public TMP_Text percentText;
     [SerializeField]
     GameObject wallToPaint;
 
@@ -53,7 +52,7 @@ public class TextureCheck : MonoBehaviour
                     paintedPixels++;
                 }
             }
-            percentText.text = (Mathf.RoundToInt((paintedPixels / texturePoints.Count) * 100)).ToString();
+            percentText.text = "%" + (Mathf.RoundToInt((paintedPixels / texturePoints.Count) * 100)).ToString();
         }
 
     }

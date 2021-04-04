@@ -5,7 +5,9 @@ public class CameraFollow : MonoBehaviour
     public Transform target;
 
     [SerializeField]
-    float followDistance = 18f;
+    float followDistanceZ = 21f;
+    [SerializeField]
+    float followDistanceY = 13f;
     [SerializeField]
     float strafeSpeed = .1f;
 
@@ -21,7 +23,7 @@ public class CameraFollow : MonoBehaviour
 
     private void Update()
     {
-        targetPos = new Vector3(target.position.x, transform.position.y, (target.position.z - followDistance));
+        targetPos = new Vector3(target.position.x, (target.position.y + followDistanceY), (target.position.z - followDistanceZ));
     }
 
     private void FixedUpdate()
@@ -32,7 +34,7 @@ public class CameraFollow : MonoBehaviour
     private void CheckForObjectsInTheWay()
     {
         //Vector3 rayStart = player.transform.position + Vector3.up * 0.8f;
-        Vector3 rayEnd = new Vector3(target.position.x, transform.position.y, (target.position.z - followDistance));
+        Vector3 rayEnd = new Vector3(target.position.x, (target.position.y + followDistanceY), (target.position.z - followDistanceZ));
         //Physics.Raycast(rayStart, transform.position, out hit, Mathf.Infinity);
         //if (hit.transform != null)
         //{

@@ -29,6 +29,7 @@ public abstract class CharacterBase : MonoBehaviour
     [Header("Stun Parameters")]
     public float spawnTime = 2f;
     public bool isStunned;
+    public bool respawning;
     Vector3 startPos;
     Quaternion startRot;
 
@@ -82,8 +83,11 @@ public abstract class CharacterBase : MonoBehaviour
 
     public virtual void TurnCharacter(Vector3 movementVector)
     {
-        Quaternion direction = Quaternion.LookRotation(movementVector);
-        transform.rotation = Quaternion.Lerp(transform.rotation, direction, Time.deltaTime * turnSpeed);
+        if(movementVector != Vector3.zero)
+        {
+            Quaternion direction = Quaternion.LookRotation(movementVector);
+            transform.rotation = Quaternion.Lerp(transform.rotation, direction, Time.deltaTime * turnSpeed);
+        }
     }
 
     public virtual void Jump()
@@ -102,18 +106,24 @@ public abstract class CharacterBase : MonoBehaviour
 
     public virtual void FallFromMap()
     {
-        if (rb.velocity.y <= -12f)
+        if (transform.position.y < -1f)
         {
-            StartCoroutine(RespawnCo());
             StartCoroutine(StunCo());
+            StartCoroutine(RespawnCo());
         }
     }
 
     public virtual IEnumerator RespawnCo()
-    {        
-        yield return new WaitForSeconds(spawnTime);
-        transform.position = startPos;
-        transform.rotation = startRot;
+    {
+        if (!respawning)
+        {
+            respawning = true;
+            yield return new WaitForSeconds(spawnTime);
+            transform.position = startPos;
+            transform.rotation = startRot;
+            respawning = false;
+        }
+
     }
 
     public virtual IEnumerator StunCo()

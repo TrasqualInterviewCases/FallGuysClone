@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class PlayerCharacter : CharacterBase, IEffectable
@@ -20,6 +20,7 @@ public class PlayerCharacter : CharacterBase, IEffectable
 
 
     bool isGrounded = true;
+    bool onRotatingPlatform = false;
 
     public override void Awake()
     {
@@ -118,7 +119,14 @@ public class PlayerCharacter : CharacterBase, IEffectable
 
     public override void MoveCharacter(Vector3 targetVelocity, Vector3 velocitychange)
     {
-        rb.AddForce(transform.forward * speed, ForceMode.Force);
+        if (!onRotatingPlatform)
+        {
+            base.MoveCharacter(targetVelocity, velocitychange);
+        }
+        else
+        {
+            rb.AddForce(transform.forward * speed, ForceMode.Force);
+        }
     }
 
     public override void TurnCharacter(Vector3 movementVector)
@@ -154,6 +162,7 @@ public class PlayerCharacter : CharacterBase, IEffectable
 
     public void Respawn()
     {
+        StartCoroutine(StunCo());
         StartCoroutine(RespawnCo());
     }
 
@@ -170,9 +179,49 @@ public class PlayerCharacter : CharacterBase, IEffectable
 
     public void Finish()
     {
+        StartCoroutine(FinishCo());
+    }
+
+    public IEnumerator FinishCo()
+    {
+        racing = false;
+        GameObject wall = GameObject.Find("WallToPaint");
+        float t = 0;
+        Vector3 curPos = transform.position;
+        while (t < 1)
+        {
+            t += Time.deltaTime;
+            rb.isKinematic = true;
+            transform.position = Vector3.MoveTowards(curPos, (wall.transform.position - new Vector3(0f, 5f, 3f)),t*speed);
+            transform.LookAt((wall.transform.position - new Vector3(0f, 6.2f, 3f)));
+            anim.SetFloat("speed", 1f);
+            yield return new WaitForEndOfFrame();
+        }
+        rb.velocity = Vector3.zero;
+        anim.SetFloat("speed", 0f);
         Camera mainCam = Camera.main;
+        yield return new WaitForSeconds(0.5f);
         mainCam.GetComponent<Es.InkPainter.Sample.MousePainter>().enabled = true;
-        mainCam.GetComponent<CameraFollow>().target = GameObject.Find("WallToPaint").transform;
-        enabled = false;
+        mainCam.GetComponent<TextureCheck>().isPainting = true;
+        mainCam.GetComponent<TextureCheck>().percentText.gameObject.SetActive(true);
+        mainCam.GetComponent<CameraFollow>().target = wall.transform;
+        GameManager.gmInstance.FinishRace();
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if(other.GetComponent<Obstacles>() != null)
+        {
+            Obstacles obstacle = other.GetComponent<Obstacles>();
+            if(obstacle.obsType == Obstacles.ObstacleType.RotatingPlatform)
+            {
+                onRotatingPlatform = true;
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        onRotatingPlatform = false;
     }
 }
