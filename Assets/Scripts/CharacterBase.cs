@@ -20,11 +20,11 @@ public abstract class CharacterBase : MonoBehaviour
     [Header("Jump Parameters")]
     [SerializeField]
     float jumpForce = 400f;
-    bool canJump = false;
+    public bool canJump = false;
 
     float groundDistance = 0.2f;
     [SerializeField]
-    LayerMask mask;
+    public LayerMask mask;
 
     [Header("Stun Parameters")]
     public float spawnTime = 2f;
@@ -60,7 +60,7 @@ public abstract class CharacterBase : MonoBehaviour
 
     public virtual void CalculateVelocityChange(Vector3 movementVector)
     {
-        targetVelocity = transform.forward * movementVector.magnitude * speed;
+        targetVelocity = transform.forward * speed;
         Vector3 currentVelocity = rb.velocity;
         //if (targetVelocity.magnitude < currentVelocity.magnitude)
         //{

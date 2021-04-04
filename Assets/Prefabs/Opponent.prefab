@@ -83,7 +83,8 @@ MonoBehaviour:
   velocityChange: {x: 0, y: 0, z: 0}
   anim: {fileID: 0}
   rb: {fileID: 0}
-  jumpForce: 300
+  jumpForce: 250
+  canJump: 0
   mask:
     serializedVersion: 2
     m_Bits: 512

@@ -31,11 +31,6 @@ public class TextureCheck : MonoBehaviour
         public bool isPainted = false;
     }
 
-    private void Start()
-    {
-
-    }
-
     private void Update()
     {
             
