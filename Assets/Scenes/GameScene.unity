@@ -1574,7 +1574,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fae9f8b15d83bb43bfd9f999cad9b6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  force: 10
+  force: 5
   rotationSpeed: 0
   movementSpeed: 1
   target: {fileID: 1700490560}
@@ -1586,7 +1586,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 795868161}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 1f96a5b75c05d9342bf3751e785ec1fa, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.04
@@ -1600,7 +1600,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 795868161}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 1f96a5b75c05d9342bf3751e785ec1fa, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.04
@@ -1614,7 +1614,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 795868161}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 1f96a5b75c05d9342bf3751e785ec1fa, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.04
@@ -2129,7 +2129,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 4a5e89ae7a5f315448df81801c43fe1c,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 20.24
+      value: 19.2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4a5e89ae7a5f315448df81801c43fe1c,
         type: 3}
@@ -3603,7 +3603,7 @@ PrefabInstance:
     - target: {fileID: 7221993039089599688, guid: af43b6c97ac250c40a62a4260b6718f0,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -16.421085
+      value: 1.58
       objectReference: {fileID: 0}
     - target: {fileID: 7221993039089599688, guid: af43b6c97ac250c40a62a4260b6718f0,
         type: 3}

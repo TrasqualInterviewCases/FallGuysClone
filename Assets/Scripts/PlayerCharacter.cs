@@ -41,7 +41,7 @@ public class PlayerCharacter : CharacterBase, IEffectable
             GetInput();
             if (isGrounded)
             {
-                CalculateVelocityChange(movement);
+                CalculateVelocityChange();
             }
             TurnCharacter(movement);
             FallFromMap();
@@ -111,9 +111,9 @@ public class PlayerCharacter : CharacterBase, IEffectable
         }
     }
 
-    public override void CalculateVelocityChange(Vector3 movementVector)
+    public override void CalculateVelocityChange()
     {
-        base.CalculateVelocityChange(movementVector);
+        base.CalculateVelocityChange();
     }
 
     public override void MoveCharacter(Vector3 targetVelocity, Vector3 velocitychange)

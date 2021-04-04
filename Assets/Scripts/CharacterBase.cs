@@ -6,34 +6,34 @@ public abstract class CharacterBase : MonoBehaviour
 {
     [SerializeField]
     [Header("Movement Parameters")]
-    public float speed = 5f;
+    protected float speed = 5f;
     [SerializeField]
     float maxVelocityChange = 3f;
     [SerializeField]
     float turnSpeed = 8f;
-    public Vector3 targetVelocity;
-    public Vector3 velocityChange;
+    protected Vector3 targetVelocity;
+    protected Vector3 velocityChange;
 
-    public Animator anim;
-    public Rigidbody rb;
+    protected Animator anim;
+    protected Rigidbody rb;
 
     [Header("Jump Parameters")]
     [SerializeField]
-    float jumpForce = 400f;
-    public bool canJump = false;
+    protected float jumpForce = 400f;
+    protected bool canJump = false;
 
     float groundDistance = 0.2f;
     [SerializeField]
-    public LayerMask mask;
+    protected LayerMask mask;
 
     [Header("Stun Parameters")]
-    public float spawnTime = 2f;
-    public bool isStunned;
-    public bool respawning;
+    protected float spawnTime = 2f;
+    protected bool isStunned;
+    protected bool respawning;
     Vector3 startPos;
     Quaternion startRot;
 
-    public bool racing = false;
+    protected bool racing = false;
 
     public virtual void Awake()
     {
@@ -58,7 +58,7 @@ public abstract class CharacterBase : MonoBehaviour
         racing = start;
     }
 
-    public virtual void CalculateVelocityChange(Vector3 movementVector)
+    public virtual void CalculateVelocityChange()
     {
         targetVelocity = transform.forward * speed;
         Vector3 currentVelocity = rb.velocity;
@@ -106,7 +106,7 @@ public abstract class CharacterBase : MonoBehaviour
 
     public virtual void FallFromMap()
     {
-        if (transform.position.y < -1f)
+        if (transform.position.y < -2f)
         {
             StartCoroutine(StunCo());
             StartCoroutine(RespawnCo());

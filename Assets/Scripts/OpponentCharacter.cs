@@ -12,7 +12,7 @@ public class OpponentCharacter : CharacterBase,IEffectable
 
     int waypointNo = 0;
     float randomnessFactor = 4f;
-    int numOfGroundRays = 17;
+    int numOfGroundRays = 5;
     float angle = 180;
 
     bool isGrounded = true;
@@ -33,17 +33,20 @@ public class OpponentCharacter : CharacterBase,IEffectable
     {
         if (!isStunned)
         {
-            AvoidObstacles();
-            CheckDistanceToWp();
             isGrounded = GroundCheck();
             anim.SetBool("isGrounded", isGrounded);
             anim.SetFloat("verticalSpeed", rb.velocity.y);
-            if (isGrounded)
+            if (racing)
             {
-                CalculateVelocityChange(CalculateMovement() + avoidVector.normalized * 3);
+                AvoidObstacles();
+                CheckDistanceToWp();
+                if (isGrounded)
+                {
+                    CalculateVelocityChange();
+                }
+                TurnCharacter(CalculateMovement() + avoidVector);
+                FallFromMap();
             }
-            TurnCharacter(CalculateMovement() + avoidVector.normalized * 3);
-            FallFromMap();
         }
 
         //if (ragController.activateRagdoll)
@@ -84,16 +87,15 @@ public class OpponentCharacter : CharacterBase,IEffectable
             var direction = rot * rotVariaton * (transform.forward * 6f - transform.up);
 
             Ray ray = new Ray(transform.position + transform.up, direction);
-            RaycastHit hitInfo;
-            if (!Physics.Raycast(ray, out hitInfo, 15f))
+            if (!Physics.Raycast(ray, 15f))
             {
-                avoidVector -= 1/numOfGroundRays * direction;
+                avoidVector -= new Vector3(direction.x, 0f, direction.z);
             }
             else
             {
                 Vector3 origin = new Vector3(transform.position.x, transform.position.y + 1.2f, transform.position.z);
                 RaycastHit hit;
-                if (Physics.SphereCast(origin, 4f, transform.forward, out hit, 3f))
+                if (Physics.SphereCast(origin, 4f, transform.forward, out hit, 2f))
                 {
                     if (hit.transform.GetComponent<Obstacles>() != null)
                     {
@@ -105,15 +107,12 @@ public class OpponentCharacter : CharacterBase,IEffectable
                             {
                                 avoidVector *= -1f;
                             }
-                            if (obs.obsType == Obstacles.ObstacleType.RotatingStick && Vector3.Distance(hit.point, transform.position) <= 3f)
+                            if (obs.obsType == Obstacles.ObstacleType.RotatingStick && hit.distance <= 3f)
                             {
                                 canJump = true;
                             }
                         }
-                        else
-                        {
-                            avoidVector = Vector3.Lerp(avoidVector, Vector3.zero, Time.deltaTime);
-                        }
+
                     }
                 }
             }
@@ -122,7 +121,7 @@ public class OpponentCharacter : CharacterBase,IEffectable
 
     private void OnDrawGizmos()
     {
-        for (int i = 0; i < numOfGroundRays; i++)
+        for (int i = 0; i < numOfGroundRays+1; i++)
         {
             var rot = transform.rotation;
             var rotVariaton = Quaternion.AngleAxis((i / (float)numOfGroundRays) * angle - 90, transform.up);
@@ -174,9 +173,9 @@ public class OpponentCharacter : CharacterBase,IEffectable
         return movement = (target - transform.position).normalized;
     }
 
-    public override void CalculateVelocityChange(Vector3 movementVector)
+    public override void CalculateVelocityChange()
     {
-        base.CalculateVelocityChange(movementVector);
+        base.CalculateVelocityChange();
     }
 
     public override void MoveCharacter(Vector3 targetVelocity, Vector3 velocitychange)

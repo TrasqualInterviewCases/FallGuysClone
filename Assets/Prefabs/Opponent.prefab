@@ -79,19 +79,10 @@ MonoBehaviour:
   speed: 7
   maxVelocityChange: 3
   turnSpeed: 8
-  targetVelocity: {x: 0, y: 0, z: 0}
-  velocityChange: {x: 0, y: 0, z: 0}
-  anim: {fileID: 0}
-  rb: {fileID: 0}
-  jumpForce: 250
-  canJump: 0
+  jumpForce: 300
   mask:
     serializedVersion: 2
     m_Bits: 512
-  spawnTime: 2
-  isStunned: 0
-  respawning: 0
-  racing: 0
   Waypoints: {fileID: 0}
 --- !u!95 &7361832373142328798
 Animator:
