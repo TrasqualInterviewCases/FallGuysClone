@@ -134,13 +134,20 @@ public class Obstacles : MonoBehaviour
                 Vector3 forceToAdd = force * -Vector3.right * Mathf.Sign(rotationSpeed);
                 effectable.ApplyForce(forceToAdd, ForceMode.Force);
             }
-            else if (obsType == ObstacleType.FinishLine)
+
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        IEffectable effectable = other.GetComponent<IEffectable>();
+        if (effectable != null)
+        {
+            if (obsType == ObstacleType.FinishLine)
             {
                 effectable.Finish();
             }
         }
     }
-
-
 
 }

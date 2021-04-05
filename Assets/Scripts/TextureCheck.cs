@@ -31,9 +31,13 @@ public class TextureCheck : MonoBehaviour
         public bool isPainted = false;
     }
 
-    private void Update()
+    private void Start()
     {
-            
+        percentText.text = "% 0";
+    }
+
+    private void Update()
+    {           
 
         if (Input.GetMouseButton(0) && isPainting)
         {

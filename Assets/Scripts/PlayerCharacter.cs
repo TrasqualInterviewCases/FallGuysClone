@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using Cinemachine;
 
 public class PlayerCharacter : CharacterBase, IEffectable
 {
@@ -183,26 +184,34 @@ public class PlayerCharacter : CharacterBase, IEffectable
 
     public IEnumerator FinishCo()
     {
+        
+        Camera mainCam = Camera.main;
+        mainCam.GetComponent<CinemachineBrain>().m_UpdateMethod = CinemachineBrain.UpdateMethod.LateUpdate;
         racing = false;
         GameObject wall = GameObject.Find("WallToPaint");
         float t = 0;
-        Vector3 curPos = transform.position;
+        rb.velocity = Vector3.zero;
+        rb.isKinematic = true;
+        var curPos = transform.position;
+        anim.SetFloat("speed", 0f);
+        yield return new WaitForSeconds(1f);
+
+        anim.SetFloat("speed", 1f);
         while (t < 1)
         {
             t += Time.deltaTime;
-            rb.isKinematic = true;
-            transform.position = Vector3.MoveTowards(curPos, (wall.transform.position - new Vector3(0f, 5f, 4f)),t*15f);
-            transform.LookAt((wall.transform.position - new Vector3(0f, 6.2f, 3f)));
-            anim.SetFloat("speed", 1f);
+            transform.position = Vector3.Lerp(curPos, new Vector3(wall.transform.position.x, transform.position.y, wall.transform.position.z - 4f),t);
+            transform.LookAt(new Vector3(wall.transform.position.x, transform.position.y, wall.transform.position.z));            
             yield return new WaitForEndOfFrame();
         }
-        rb.velocity = Vector3.zero;
         anim.SetFloat("speed", 0f);
-        Camera mainCam = Camera.main;
+        
         yield return new WaitForSeconds(0.5f);
         mainCam.GetComponent<Es.InkPainter.Sample.MousePainter>().enabled = true;
-        mainCam.GetComponent<TextureCheck>().isPainting = true;
-        mainCam.GetComponent<TextureCheck>().percentText.gameObject.SetActive(true);
+        TextureCheck texCheck = mainCam.GetComponent<TextureCheck>();
+        texCheck.enabled = true;
+        texCheck.isPainting = true;
+        texCheck.percentText.gameObject.SetActive(true);
         mainCam.GetComponent<CameraFollow>().target = wall.transform;
         Transform vCams = GameObject.Find("VirtualCams").transform;
         vCams.GetChild(0).gameObject.SetActive(false);

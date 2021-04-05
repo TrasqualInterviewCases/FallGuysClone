@@ -20,7 +20,8 @@ public class GameManager : MonoBehaviour
     TMP_Text countdownText;
     [SerializeField]
     TMP_Text timerText;
-
+    [SerializeField]
+    TMP_Text standingsText;
 
     [Header ("Prefabs")]
     public List<Transform> spawnPoints = new List<Transform>();
@@ -30,12 +31,19 @@ public class GameManager : MonoBehaviour
     GameObject playerPrefab;
 
     List<GameObject> opponents = new List<GameObject>();
+    List<CharacterBase> standingsList = new List<CharacterBase>();
 
 
     private void Awake()
     {
         gmInstance = this;
         SetupCharacters();
+        Standings();
+    }
+
+    private void Update()
+    {
+        SortStandings();
     }
 
     private IEnumerator CountDownTimer()
@@ -64,6 +72,7 @@ public class GameManager : MonoBehaviour
         countdownCanvas.gameObject.SetActive(false);
         Time.timeScale = 1f;
         timerText.gameObject.SetActive(true);
+        standingsText.gameObject.SetActive(true);
         OnRaceStart?.Invoke(true);
     }
 
@@ -95,5 +104,34 @@ public class GameManager : MonoBehaviour
         {
             opponent.SetActive(false);
         }
+        standingsText.gameObject.SetActive(false);
+    }
+
+    private void Standings()
+    {
+        CharacterBase[] characters = FindObjectsOfType<CharacterBase>();
+
+        for (int i = 0; i < characters.Length; i++)
+        {
+            standingsList.Add(characters[i]);
+        }
+    }
+
+    private void SortStandings()
+    {
+        standingsList.Sort(CompareStandings);
+        standingsList.Reverse();
+        for (int i = 0; i < standingsList.Count; i++)
+        {
+            if (standingsList[i].GetComponent<PlayerCharacter>() != null)
+            {
+                standingsText.text = (i+1) + "/" + (standingsList.Count);
+            }
+        }
+    }
+
+    private int CompareStandings(CharacterBase z1, CharacterBase z2)
+    {
+        return z1.transform.position.z.CompareTo(z2.transform.position.z);
     }
 }

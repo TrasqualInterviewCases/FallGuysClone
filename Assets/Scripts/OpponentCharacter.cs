@@ -11,9 +11,9 @@ public class OpponentCharacter : CharacterBase,IEffectable
     Vector3 avoidVector;
 
     int waypointNo = 0;
-    float randomnessFactor = 4f;
-    int numOfGroundRays = 5;
-    float angle = 180;
+    float randomnessFactor = 5f;
+    int numOfGroundRays = 17;
+    float angle = 360;
 
     bool isGrounded = true;
 
@@ -68,53 +68,70 @@ public class OpponentCharacter : CharacterBase,IEffectable
         }
     }
 
-    //private void CheckIfStuck()
-    //{
-    //    if (rb.velocity == Vector3.zero)
-    //    {
-    //        waypointNo--;
-    //    }
-    //}
-
     private void AvoidObstacles()
     {
         avoidVector = Vector3.zero;
-
-        for (int i = 0; i < numOfGroundRays; i++)
+        if (isGrounded)
         {
-            var rot = transform.rotation;
-            var rotVariaton = Quaternion.AngleAxis((i / (float)numOfGroundRays) * angle -90, transform.up);
-            var direction = rot * rotVariaton * (transform.forward * 6f - transform.up);
+            for (int i = 0; i < numOfGroundRays; i++)
+            {
+                var rot = transform.rotation;
+                var rotVariaton = Quaternion.AngleAxis((i / (float)numOfGroundRays) * angle - 90, transform.up);
+                var direction = rot * rotVariaton * (transform.forward * 3f - transform.up);
 
-            Ray ray = new Ray(transform.position + transform.up, direction);
-            if (!Physics.Raycast(ray, 15f))
-            {
-                avoidVector -= new Vector3(direction.x, 0f, direction.z);
-            }
-            else
-            {
-                Vector3 origin = new Vector3(transform.position.x, transform.position.y + 1.2f, transform.position.z);
-                RaycastHit hit;
-                if (Physics.SphereCast(origin, 4f, transform.forward, out hit, 2f))
+                Ray ray = new Ray(transform.position + transform.up, direction);
+                RaycastHit hitInfo;
+                if (!Physics.Raycast(ray, out hitInfo, 3.5f))
                 {
-                    if (hit.transform.GetComponent<Obstacles>() != null)
+                    avoidVector -= new Vector3(direction.x, 0f, direction.z);
+                }
+                else if (hitInfo.transform.GetComponent<Obstacles>() != null)
+                {
+                    if (hitInfo.transform.GetComponent<Obstacles>().obsType != Obstacles.ObstacleType.FinishLine && hitInfo.transform.GetComponent<Obstacles>().obsType != Obstacles.ObstacleType.RotatingPlatform)
                     {
-                        var obs = hit.transform.GetComponent<Obstacles>();
-                        if (obs.obsType != Obstacles.ObstacleType.FinishLine && obs.obsType != Obstacles.ObstacleType.RotatingPlatform)
-                        {
-                            avoidVector = (new Vector3(hit.point.x, 0f, hit.point.z) - transform.position);
-                            if (Vector3.Dot(transform.forward, avoidVector) > 0)
-                            {
-                                avoidVector *= -1f;
-                            }
-                            if (obs.obsType == Obstacles.ObstacleType.RotatingStick && hit.distance <= 3f)
-                            {
-                                canJump = true;
-                            }
-                        }
-
+                        avoidVector -= new Vector3(direction.x, 0f, direction.z);
+                    }
+                    else if (hitInfo.transform.GetComponent<Obstacles>().obsType == Obstacles.ObstacleType.RotatingPlatform || hitInfo.transform.GetComponent<Obstacles>().obsType == Obstacles.ObstacleType.RotatingStick)
+                    {
+                        avoidVector = Vector3.zero;
                     }
                 }
+            }
+        }
+
+
+        Vector3 origin = new Vector3(transform.position.x, transform.position.y + 1.2f, transform.position.z);
+        RaycastHit hit;
+        if (Physics.SphereCast(origin, 4f, transform.forward, out hit, 2f))
+        {
+            if (hit.transform.GetComponent<Obstacles>() != null)
+            {
+                var obs = hit.transform.GetComponent<Obstacles>();
+                if (obs.obsType != Obstacles.ObstacleType.FinishLine && obs.obsType != Obstacles.ObstacleType.RotatingPlatform)
+                {
+                    avoidVector = (new Vector3(hit.transform.position.x, 0f, hit.transform.position.z) - transform.position);
+
+                    if (obs.obsType == Obstacles.ObstacleType.RotatingStick)
+                    {
+                        if(hit.distance <= 2.5f)
+                        {
+                            canJump = true;
+                        }
+                        avoidVector = Vector3.zero;;
+                    }
+                }
+                else if(obs.obsType == Obstacles.ObstacleType.RotatingPlatform)
+                {
+                    avoidVector = Vector3.zero;
+                }
+            }
+            if (hit.transform.GetComponent<CharacterBase>() != null)
+            {
+                avoidVector -= (new Vector3(hit.transform.position.x, 0f, hit.transform.position.z) - transform.position);
+            }
+            if (Vector3.Dot(transform.forward, avoidVector) > 0)
+            {
+                avoidVector *= -1f;
             }
         }
     }
@@ -125,7 +142,7 @@ public class OpponentCharacter : CharacterBase,IEffectable
         {
             var rot = transform.rotation;
             var rotVariaton = Quaternion.AngleAxis((i / (float)numOfGroundRays) * angle - 90, transform.up);
-            var direction = rot * rotVariaton * (transform.forward * 6f - transform.up);
+            var direction = rot * rotVariaton * (transform.forward * 3f - transform.up);
             Gizmos.color = Color.red;
             Gizmos.DrawRay(transform.position + transform.up, direction);
         }
@@ -137,7 +154,7 @@ public class OpponentCharacter : CharacterBase,IEffectable
         float randomZ = Random.Range(-randomnessFactor, randomnessFactor);
         Vector3 randomness = new Vector3(randomX, 0f, randomZ);
         Vector3 waypointPos = new Vector3();
-        if(Waypoints.GetChild(wpNo).childCount > 1)
+        if(Waypoints.GetChild(wpNo).childCount != 0)
         {
             int i = Random.Range(0, Waypoints.GetChild(wpNo).childCount);
             waypointPos = Waypoints.GetChild(wpNo).GetChild(i).position + randomness;
@@ -147,7 +164,7 @@ public class OpponentCharacter : CharacterBase,IEffectable
             int randX = Random.Range(-21, 21);
             waypointPos = Waypoints.GetChild(wpNo).position + new Vector3(randX, 0f, 0f);
         }
-        else if(wpNo == 3 || wpNo == 4)
+        else if(wpNo == 1 || wpNo == 2)
         {
             waypointPos = Waypoints.GetChild(wpNo).position;
         }
@@ -160,17 +177,19 @@ public class OpponentCharacter : CharacterBase,IEffectable
 
     private void CheckDistanceToWp()
     {
-        if(Vector3.Distance(transform.position,target) < randomnessFactor)
+        if(Vector3.Distance(transform.position,target) < 6f)
         {
-            waypointNo++;
+            if (waypointNo < Waypoints.childCount - 1)
+            {
+                waypointNo++;
+            }
             target = GetWaypointPosition(waypointNo);
         }
     }
 
     private Vector3 CalculateMovement()
     {
-        Vector3 movement = Vector3.zero;
-        return movement = (target - transform.position).normalized;
+        return (target - transform.position).normalized;
     }
 
     public override void CalculateVelocityChange()
@@ -195,7 +214,11 @@ public class OpponentCharacter : CharacterBase,IEffectable
 
     public override void ApplyJumpForce()
     {
-        base.ApplyJumpForce();
+        if (canJump)
+        {
+            rb.AddForce((Vector3.up) * jumpForce);
+            canJump = false;
+        }
     }
 
     public override void FallFromMap()
@@ -215,10 +238,9 @@ public class OpponentCharacter : CharacterBase,IEffectable
 
     public void Respawn()
     {
+        waypointNo = 0;
         StartCoroutine(StunCo());
         StartCoroutine(RespawnCo());
-        waypointNo = 0;
-        GetWaypointPosition(waypointNo);
     }
 
     public void ApplyForce(Vector3 force, ForceMode forceMode)
