@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class GameManager : MonoBehaviour
@@ -105,6 +106,17 @@ public class GameManager : MonoBehaviour
             opponent.SetActive(false);
         }
         standingsText.gameObject.SetActive(false);
+    }
+
+    public void OnPlayAgainClicked()
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene(0);
+    }
+
+    public void OnQuitClicked()
+    {
+        Application.Quit();
     }
 
     private void Standings()

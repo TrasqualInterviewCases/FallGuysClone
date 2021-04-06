@@ -8,8 +8,16 @@ public class TextureCheck : MonoBehaviour
     Vector3 mouseTexCoord;
 
     [SerializeField]
+    GameObject congratsPanel;
+    [SerializeField]
+    GameObject tutorialCanvas;
+    [SerializeField]
+    ParticleSystem particle;
+
+    [SerializeField]
     Texture brushTex;
     public TMP_Text percentText;
+    float percentage;
     [SerializeField]
     GameObject wallToPaint;
 
@@ -25,6 +33,8 @@ public class TextureCheck : MonoBehaviour
 
     public bool isPainting = false;
 
+    bool win = false;
+
     public class TexturePoint
     {
         public Vector3 coordinate;
@@ -34,6 +44,7 @@ public class TextureCheck : MonoBehaviour
     private void Start()
     {
         percentText.text = "% 0";
+        tutorialCanvas.SetActive(true);
     }
 
     private void Update()
@@ -51,9 +62,24 @@ public class TextureCheck : MonoBehaviour
                     paintedPixels++;
                 }
             }
-            percentText.text = "%" + (Mathf.RoundToInt((paintedPixels / texturePoints.Count) * 100)).ToString();
+            percentage = Mathf.RoundToInt((paintedPixels / texturePoints.Count) * 100);
+            percentText.text = "%" + percentage.ToString();
         }
 
+        if(percentage >= 100 && !win)
+        {
+            StartCoroutine(Win());
+            win = false;
+                      
+        }
+    }
+
+    private IEnumerator Win()
+    {
+        particle.Play();
+        yield return new WaitForSeconds(1.5f);
+        congratsPanel.SetActive(true);
+        Time.timeScale = 0;
     }
 
     private float CheckPixels(Vector3 pixelCoord)

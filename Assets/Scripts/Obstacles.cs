@@ -131,7 +131,8 @@ public class Obstacles : MonoBehaviour
          {
             if (obsType == ObstacleType.RotatingPlatform)
             {
-                Vector3 forceToAdd = force * -Vector3.right * Mathf.Sign(rotationSpeed);
+                //Vector3 forceToAdd = force * -Vector3.right * Mathf.Sign(rotationSpeed);
+                Vector3 forceToAdd = -force * new Vector3(Mathf.Cos(Time.deltaTime) * 0.36f, Mathf.Sin(Time.deltaTime) * 0.36f, 0f) * Mathf.Sign(rotationSpeed);
                 effectable.ApplyForce(forceToAdd, ForceMode.Force);
             }
 

@@ -22,16 +22,6 @@ public class PlayerCharacter : CharacterBase, IEffectable
     bool isGrounded = true;
     bool onRotatingPlatform = false;
 
-    public override void Awake()
-    {
-        base.Awake();
-    }
-
-    public override void Start()
-    {
-        base.Start();
-    }
-
     private void Update()
     {
         if (!isStunned)
@@ -112,11 +102,6 @@ public class PlayerCharacter : CharacterBase, IEffectable
         }
     }
 
-    public override void CalculateVelocityChange()
-    {
-        base.CalculateVelocityChange();
-    }
-
     public override void MoveCharacter(Vector3 targetVelocity, Vector3 velocitychange)
     {
         if (!onRotatingPlatform)
@@ -127,37 +112,6 @@ public class PlayerCharacter : CharacterBase, IEffectable
         {
             rb.AddForce(transform.forward * speed, ForceMode.Force);
         }
-    }
-
-    public override void TurnCharacter(Vector3 movementVector)
-    {
-        base.TurnCharacter(movementVector);
-    }
-
-    public override void Jump()
-    {
-        base.Jump();       
-    }
-
-    public override void ApplyJumpForce()
-    {
-        base.ApplyJumpForce();
-    }
-
-    public override void FallFromMap()
-    {
-        base.FallFromMap();
-    }
-
-    public override IEnumerator RespawnCo()
-    {
-        yield return StartCoroutine(base.RespawnCo());
-    }
-
-    public override IEnumerator StunCo()
-    {
-        inputActive = false;
-        yield return StartCoroutine(base.StunCo());
     }
 
     public void Respawn()
@@ -184,7 +138,8 @@ public class PlayerCharacter : CharacterBase, IEffectable
 
     public IEnumerator FinishCo()
     {
-        
+        anim.SetBool("finished", true);
+        isStunned = false;
         Camera mainCam = Camera.main;
         mainCam.GetComponent<CinemachineBrain>().m_UpdateMethod = CinemachineBrain.UpdateMethod.LateUpdate;
         racing = false;
@@ -194,8 +149,8 @@ public class PlayerCharacter : CharacterBase, IEffectable
         rb.isKinematic = true;
         var curPos = transform.position;
         anim.SetFloat("speed", 0f);
-        yield return new WaitForSeconds(1f);
-
+        yield return new WaitForSeconds(2f);
+        anim.SetBool("finished", false);
         anim.SetFloat("speed", 1f);
         while (t < 1)
         {

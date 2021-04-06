@@ -16,6 +16,7 @@ public class OpponentCharacter : CharacterBase,IEffectable
     float angle = 360;
 
     bool isGrounded = true;
+    bool avoiding;
 
     public override void Awake()
     {
@@ -44,7 +45,15 @@ public class OpponentCharacter : CharacterBase,IEffectable
                 {
                     CalculateVelocityChange();
                 }
-                TurnCharacter(CalculateMovement() + avoidVector);
+                if (avoiding)
+                {
+                    TurnCharacter(avoidVector);
+                }
+                else
+                {
+                    TurnCharacter(CalculateMovement() + avoidVector);
+                }
+
                 FallFromMap();
             }
         }
@@ -83,10 +92,13 @@ public class OpponentCharacter : CharacterBase,IEffectable
                 RaycastHit hitInfo;
                 if (!Physics.Raycast(ray, out hitInfo, 3.5f))
                 {
+                    avoiding = true;
                     avoidVector -= new Vector3(direction.x, 0f, direction.z);
                 }
                 else if (hitInfo.transform.GetComponent<Obstacles>() != null)
                 {
+
+                    avoiding = true;
                     if (hitInfo.transform.GetComponent<Obstacles>().obsType != Obstacles.ObstacleType.FinishLine && hitInfo.transform.GetComponent<Obstacles>().obsType != Obstacles.ObstacleType.RotatingPlatform)
                     {
                         avoidVector -= new Vector3(direction.x, 0f, direction.z);
@@ -95,6 +107,10 @@ public class OpponentCharacter : CharacterBase,IEffectable
                     {
                         avoidVector = Vector3.zero;
                     }
+                }
+                else
+                {
+                    avoiding = false;
                 }
             }
         }
@@ -106,6 +122,7 @@ public class OpponentCharacter : CharacterBase,IEffectable
         {
             if (hit.transform.GetComponent<Obstacles>() != null)
             {
+                avoiding = true;
                 var obs = hit.transform.GetComponent<Obstacles>();
                 if (obs.obsType != Obstacles.ObstacleType.FinishLine && obs.obsType != Obstacles.ObstacleType.RotatingPlatform)
                 {
@@ -125,9 +142,18 @@ public class OpponentCharacter : CharacterBase,IEffectable
                     avoidVector = Vector3.zero;
                 }
             }
+            else
+            {
+                avoiding = false;
+            }
             if (hit.transform.GetComponent<CharacterBase>() != null)
             {
+                avoiding = true;
                 avoidVector -= (new Vector3(hit.transform.position.x, 0f, hit.transform.position.z) - transform.position);
+            }
+            else
+            {
+                avoiding = false;
             }
             if (Vector3.Dot(transform.forward, avoidVector) > 0)
             {
@@ -136,17 +162,17 @@ public class OpponentCharacter : CharacterBase,IEffectable
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        for (int i = 0; i < numOfGroundRays+1; i++)
-        {
-            var rot = transform.rotation;
-            var rotVariaton = Quaternion.AngleAxis((i / (float)numOfGroundRays) * angle - 90, transform.up);
-            var direction = rot * rotVariaton * (transform.forward * 3f - transform.up);
-            Gizmos.color = Color.red;
-            Gizmos.DrawRay(transform.position + transform.up, direction);
-        }
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    for (int i = 0; i < numOfGroundRays+1; i++)
+    //    {
+    //        var rot = transform.rotation;
+    //        var rotVariaton = Quaternion.AngleAxis((i / (float)numOfGroundRays) * angle - 90, transform.up);
+    //        var direction = rot * rotVariaton * (transform.forward * 3f - transform.up);
+    //        Gizmos.color = Color.red;
+    //        Gizmos.DrawRay(transform.position + transform.up, direction);
+    //    }
+    //}
 
     private Vector3 GetWaypointPosition(int wpNo)
     {
@@ -192,26 +218,6 @@ public class OpponentCharacter : CharacterBase,IEffectable
         return (target - transform.position).normalized;
     }
 
-    public override void CalculateVelocityChange()
-    {
-        base.CalculateVelocityChange();
-    }
-
-    public override void MoveCharacter(Vector3 targetVelocity, Vector3 velocitychange)
-    {
-        base.MoveCharacter(targetVelocity, velocitychange);
-    }
-
-    public override void TurnCharacter(Vector3 movementVector)
-    {
-        base.TurnCharacter(movementVector);
-    }
-
-    public override void Jump()
-    {
-        base.Jump();
-    }
-
     public override void ApplyJumpForce()
     {
         if (canJump)
@@ -219,21 +225,6 @@ public class OpponentCharacter : CharacterBase,IEffectable
             rb.AddForce((Vector3.up) * jumpForce);
             canJump = false;
         }
-    }
-
-    public override void FallFromMap()
-    {
-        base.FallFromMap();
-    }
-
-    public override IEnumerator RespawnCo()
-    {
-        yield return StartCoroutine(base.RespawnCo());
-    }
-
-    public override IEnumerator StunCo()
-    {
-        yield return StartCoroutine(base.StunCo());
     }
 
     public void Respawn()
@@ -257,5 +248,6 @@ public class OpponentCharacter : CharacterBase,IEffectable
     public void Finish()
     {
         enabled = false;
+        anim.SetBool("finished", true);
     }
 }

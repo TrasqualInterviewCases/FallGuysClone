@@ -33,6 +33,7 @@ public abstract class CharacterBase : MonoBehaviour
     Vector3 startPos;
     Quaternion startRot;
 
+    [SerializeField]
     protected bool racing = false;
 
     public virtual void Awake()
