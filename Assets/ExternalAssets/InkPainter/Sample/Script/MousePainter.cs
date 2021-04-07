@@ -62,13 +62,13 @@ namespace Es.InkPainter.Sample
 			}
 		}
 
-		public void OnGUI()
-		{
-			if(GUILayout.Button("Reset"))
-			{
-				foreach(var canvas in FindObjectsOfType<InkCanvas>())
-					canvas.ResetPaint();
-			}
-		}
+		//public void OnGUI()
+		//{
+		//	if(GUILayout.Button("Reset"))
+		//	{
+		//		foreach(var canvas in FindObjectsOfType<InkCanvas>())
+		//			canvas.ResetPaint();
+		//	}
+		//}
 	}
 }
